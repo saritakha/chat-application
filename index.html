@@ -8,10 +8,20 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 </head>
 <body>
+  <style>
+    body { 
+      margin-top : 30px;
+    }
+
+    .container-fluid{
+      background-color: antiquewhite;
+      margin: 10px;
+    }
+  </style>
 <div class="container">
   <div class="row">
     <div class="col-md-4">
-      <div class="well">
+      <div class="jumbotron">
         <h3>Online Users</h3>
         <ul class="list-group" id="users"></ul>
       </div>
@@ -21,23 +31,30 @@
         <form id="messageForm">
           <div class="form-group">
             <label>Enter message</label>
-            <textarea class="form-control" id="message"></textarea>
+            <textarea class="form-control" id="message" ></textarea>
           </br>
-          <input type="submit" class="btn btn-primary"  value="Send Message"/>
+          <input type="submit"  class="btn btn-primary"  value="Send Message"/>
           </div>
         </form>
     </div>
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script>
-const socket = io.connect('http://localhost:3000');
-const messageForm = document.getElementById('#messageForm');
-const message= document.getElementById('#message');
-const chat = document.getElementById('#chat');
+const socket = io.connect();
+$message = $('#message');
+$('#messageForm').submit( (e) =>{
+e.preventDefault();
+socket.emit('send message', $message.val());
+$message.val('');
+});
 
-document.getElementById('messageForm').addEventListener('onSubmit', () =>{
-console.log('submitted');
+socket.on('new message', (data) => {
+  $('#chat').append('<div class = "container-fluid">'+data.msg+'</div>')
 })
+
+
 </script>
 </body>
 </html>

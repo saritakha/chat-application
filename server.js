@@ -7,16 +7,14 @@ app.get('/', (req, res) => {
 })
 
 const io = require('socket.io')(server);
-io.on('connection', function(socket) {
+io.on('connection', function (socket) {
     console.log('user connected');
 
-    socket.on('disconnect', function() {
-        console.log('user disconnected');
-    });
-
-    socket.on('send message', function(jsonMsg) {
-        console.log('received message from client: ' + JSON.stringify(jsonMsg));
-        sockets.emit('new message', {mes:data});
+    socket.on('send message', function (data) {
+        console.log(data);
+        io.sockets.emit('new message', {
+            msg: data
+        });
     });
 });
 server.listen(3000, function () {
